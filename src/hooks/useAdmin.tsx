@@ -28,15 +28,17 @@ export function useAdmin(): UseAdminReturn {
           .from('user_roles')
           .select('role')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
-        if (error) throw error;
+        if (error && error.code !== 'PGRST116') {
+          console.warn('Error checking admin status:', error);
+        }
 
         const role = data?.role || 'user';
         setUserRole(role);
         setIsAdmin(role === 'admin');
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        // Silently handle errors to prevent console spam
         setIsAdmin(false);
         setUserRole('user');
       } finally {
