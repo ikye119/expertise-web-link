@@ -10,6 +10,7 @@ import { SkillExchangeTimeline } from '@/components/SkillExchangeTimeline';
 import { NotificationIcon } from '@/components/notifications/NotificationIcon';
 import { UserMenu } from '@/components/ui/user-menu';
 import { SkillSessionManager } from '@/components/sessions/SkillSessionManager';
+import { AISkillSuggestions } from '@/components/ai/AISkillSuggestions';
 import { useAdmin } from '@/hooks/useAdmin';
 
 export default function Dashboard() {
@@ -90,6 +91,29 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           </Link>
+        </motion.div>
+
+        {/* AI Skill Suggestions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-6 sm:mb-8"
+        >
+          <Card className="glass-effect neon-border terminal-glow">
+            <CardHeader>
+              <CardTitle className="neon-text font-orbitron flex items-center gap-2">
+                <Zap className="h-5 w-5 text-purple-400" />
+                [AI_ENHANCED_RECOMMENDATIONS]
+              </CardTitle>
+              <p className="text-muted-foreground terminal-text text-sm">
+                Get personalized skill suggestions powered by AI analysis
+              </p>
+            </CardHeader>
+            <CardContent>
+              <AISkillSuggestions onSkillAdded={() => setRefreshTrigger(prev => prev + 1)} />
+            </CardContent>
+          </Card>
         </motion.div>
 
         {/* Main Content Grid */}
