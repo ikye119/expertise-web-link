@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Home } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { MessageList } from '@/components/messaging/MessageList';
 import { MessageInput } from '@/components/messaging/MessageInput';
 
@@ -28,6 +29,12 @@ export default function Messages() {
           className="mb-8"
         >
           <div className="flex items-center gap-4 mb-4">
+            <Link to="/dashboard">
+              <Button variant="ghost" className="glow-blue hover:glow-pink transition-all duration-300">
+                <Home className="h-4 w-4 mr-2" />
+                Dashboard
+              </Button>
+            </Link>
             {selectedUserId && (
               <Button variant="ghost" onClick={handleBack}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
