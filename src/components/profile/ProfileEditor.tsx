@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Save, Camera, MapPin, Clock } from 'lucide-react';
+import { AvatarUpload } from '@/components/ui/avatar-upload';
+import { User, Save, MapPin, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -140,28 +141,13 @@ export function ProfileEditor({ onProfileUpdate }: ProfileEditorProps) {
         <CardContent className="space-y-6">
           {/* Avatar Section */}
           <div className="flex items-center gap-6">
-            <div className="relative">
-              {profile.avatar_url ? (
-                <img
-                  src={profile.avatar_url}
-                  alt="Profile Avatar"
-                  className="w-20 h-20 rounded-full object-cover border-2 border-primary glow-blue"
-                />
-              ) : (
-                <div className="w-20 h-20 rounded-full bg-primary/20 border-2 border-primary glow-blue flex items-center justify-center">
-                  <User className="h-8 w-8 text-primary" />
-                </div>
-              )}
-              <Button
-                size="icon"
-                className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full glow-green hover:glow-pink transition-all duration-300"
-              >
-                <Camera className="h-4 w-4" />
-              </Button>
-            </div>
+            <AvatarUpload
+              currentAvatarUrl={profile.avatar_url}
+              onAvatarChange={(url) => handleChange('avatar_url', url)}
+            />
             <div className="flex-1">
               <Label htmlFor="avatar_url" className="text-sm font-medium terminal-text">
-                Avatar URL
+                Avatar URL (Optional)
               </Label>
               <Input
                 id="avatar_url"
@@ -170,6 +156,9 @@ export function ProfileEditor({ onProfileUpdate }: ProfileEditorProps) {
                 placeholder="> ENTER_AVATAR_URL..."
                 className="glass-effect border-primary/20 focus:border-primary/50 terminal-text"
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                Or click the camera icon to upload/manage your avatar
+              </p>
             </div>
           </div>
 

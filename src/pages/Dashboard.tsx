@@ -8,6 +8,7 @@ import { SkillList } from '@/components/SkillList';
 import { UserMatches } from '@/components/UserMatches';
 import { SkillExchangeTimeline } from '@/components/SkillExchangeTimeline';
 import { NotificationIcon } from '@/components/notifications/NotificationIcon';
+import { UserMenu } from '@/components/ui/user-menu';
 import { useAdmin } from '@/hooks/useAdmin';
 
 export default function Dashboard() {
@@ -41,12 +42,7 @@ export default function Dashboard() {
                   </Button>
                 </Link>
               )}
-              <Link to="/profile">
-                <Button className="glow-blue hover:glow-pink transition-all duration-300 min-w-[44px] min-h-[44px]">
-                  <User className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Profile</span>
-                </Button>
-              </Link>
+              <UserMenu />
             </div>
           </div>
         </motion.div>
