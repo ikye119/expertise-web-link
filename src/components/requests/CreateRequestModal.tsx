@@ -214,7 +214,7 @@ export function CreateRequestModal({
                   </SelectTrigger>
                   <SelectContent>
                     {teachingSkills.length === 0 ? (
-                      <SelectItem value="" disabled>
+                      <SelectItem value="none" disabled>
                         No teaching skills available
                       </SelectItem>
                     ) : (
@@ -239,7 +239,7 @@ export function CreateRequestModal({
                   </SelectTrigger>
                   <SelectContent>
                     {learningSkills.length === 0 ? (
-                      <SelectItem value="" disabled>
+                      <SelectItem value="none" disabled>
                         No learning skills available
                       </SelectItem>
                     ) : (
