@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, User, Clock } from 'lucide-react';
+import { MessageCircle, User, Clock, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
+import { UserSearch } from './UserSearch';
+import { TypingIndicator } from './TypingIndicator';
 
 interface Message {
   id: string;
@@ -26,14 +28,17 @@ interface Message {
 interface MessageListProps {
   selectedUserId?: string;
   onSelectUser?: (userId: string, displayName: string) => void;
+  typingUsers?: Set<string>;
 }
 
-export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) {
+export function MessageList({ selectedUserId, onSelectUser, typingUsers = new Set() }: MessageListProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversations, setConversations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showUserSearch, setShowUserSearch] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fetchConversations = async () => {
     if (!user) return;
@@ -124,6 +129,16 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
     }
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (selectedUserId) {
+      scrollToBottom();
+    }
+  }, [messages, selectedUserId]);
+
   useEffect(() => {
     fetchConversations();
 
@@ -159,13 +174,24 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
 
   if (!selectedUserId) {
     return (
-      <Card className="glass-effect neon-border terminal-glow">
-        <CardHeader>
-          <CardTitle className="neon-text font-orbitron flex items-center gap-2 terminal-text">
-            <MessageCircle className="h-5 w-5" />
-            CONVERSATIONS_SYS
-          </CardTitle>
-        </CardHeader>
+      <>
+        <Card className="glass-effect neon-border terminal-glow">
+          <CardHeader>
+            <CardTitle className="neon-text font-orbitron flex items-center justify-between terminal-text">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5" />
+                CONVERSATIONS_SYS
+              </div>
+              <Button
+                onClick={() => setShowUserSearch(true)}
+                className="glow-green hover:glow-pink transition-all duration-300"
+                size="sm"
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">New Chat</span>
+              </Button>
+            </CardTitle>
+          </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
@@ -217,6 +243,19 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
           )}
         </CardContent>
       </Card>
+      
+      <AnimatePresence>
+        {showUserSearch && (
+          <UserSearch
+            onSelectUser={(userId, displayName) => {
+              onSelectUser?.(userId, displayName);
+              setShowUserSearch(false);
+            }}
+            onClose={() => setShowUserSearch(false)}
+          />
+        )}
+      </AnimatePresence>
+      </>
     );
   }
 
@@ -240,11 +279,11 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
               <div
                 className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-lg glass-effect text-sm sm:text-base ${
                   message.sender_id === user?.id
-                    ? 'bg-primary/20 neon-border'
-                    : 'bg-secondary/50'
+                    ? 'bg-primary/20 neon-border glow-pulse'
+                    : 'bg-secondary/50 terminal-glow'
                 }`}
               >
-                <p className="break-words">{message.content}</p>
+                <p className="break-words terminal-text">{message.content}</p>
                 <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                   <Clock className="h-3 w-3" />
                   {formatDistanceToNow(new Date(message.created_at))} ago
@@ -252,6 +291,15 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
               </div>
             </motion.div>
           ))}
+          
+          {/* Typing indicator */}
+          <AnimatePresence>
+            {typingUsers.has(selectedUserId || '') && (
+              <TypingIndicator userName="User" />
+            )}
+          </AnimatePresence>
+          
+          <div ref={messagesEndRef} />
         </div>
       </CardContent>
     </Card>

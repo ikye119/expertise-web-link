@@ -9,6 +9,7 @@ import { MessageInput } from '@/components/messaging/MessageInput';
 export default function Messages() {
   const [selectedUserId, setSelectedUserId] = useState<string>();
   const [selectedUserName, setSelectedUserName] = useState<string>();
+  const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
 
   const handleSelectUser = (userId: string, displayName: string) => {
     setSelectedUserId(userId);
@@ -18,6 +19,20 @@ export default function Messages() {
   const handleBack = () => {
     setSelectedUserId(undefined);
     setSelectedUserName(undefined);
+  };
+
+  const handleTypingChange = (isTyping: boolean) => {
+    if (!selectedUserId) return;
+    
+    setTypingUsers(prev => {
+      const newSet = new Set(prev);
+      if (isTyping) {
+        newSet.add(selectedUserId);
+      } else {
+        newSet.delete(selectedUserId);
+      }
+      return newSet;
+    });
   };
 
   return (
@@ -52,17 +67,20 @@ export default function Messages() {
             <MessageList 
               selectedUserId={selectedUserId}
               onSelectUser={handleSelectUser}
+              typingUsers={typingUsers}
             />
           ) : (
             <div className="space-y-4">
               <MessageList 
                 selectedUserId={selectedUserId}
                 onSelectUser={handleSelectUser}
+                typingUsers={typingUsers}
               />
               <div className="sticky bottom-0 bg-gradient-primary/80 backdrop-blur-lg p-2 sm:p-4 rounded-lg">
                 <MessageInput 
                   recipientId={selectedUserId}
                   onMessageSent={() => {}}
+                  onTypingChange={handleTypingChange}
                 />
               </div>
             </div>

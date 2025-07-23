@@ -181,6 +181,34 @@ All colors MUST be HSL.
     animation: pulse-glow 2s ease-in-out infinite;
   }
 
+  .glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite alternate;
+  }
+
+  .message-bubble-enter {
+    animation: messageSlide 0.3s ease-out;
+  }
+
+  @keyframes messageSlide {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes glow-pulse {
+    from {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+    }
+    to {
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+    }
+  }
+
   .timeline-card {
     animation: slide-in-timeline 0.6s ease-out forwards;
     opacity: 0;
