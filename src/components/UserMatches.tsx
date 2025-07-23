@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { MessageCircle, Star, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -181,11 +184,14 @@ export function UserMatches() {
   }
 
   return (
-    <Card>
+    <Card className="glass-effect neon-border">
       <CardHeader>
-        <CardTitle>Potential Matches</CardTitle>
+        <CardTitle className="neon-text font-orbitron flex items-center gap-2">
+          <Zap className="h-5 w-5" />
+          Skill Matches
+        </CardTitle>
         <CardDescription>
-          People with complementary skills who might be interested in skill exchange
+          Connect with complementary skill partners
         </CardDescription>
       </CardHeader>
       <CardContent>
