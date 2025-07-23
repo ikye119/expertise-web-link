@@ -40,8 +40,52 @@ interface MatchedUser {
 export function UserMatches() {
   const [matches, setMatches] = useState<MatchedUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConnecting, setIsConnecting] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const sendConnectionRequest = async (recipientId: string, skillName: string) => {
+    if (!user || isConnecting) return;
+
+    setIsConnecting(true);
+    try {
+      // Create a connection record
+      const { error: connectionError } = await supabase
+        .from('match_connections')
+        .insert({
+          user1_id: user.id,
+          user2_id: recipientId,
+          skill_name: skillName
+        });
+
+      if (connectionError) throw connectionError;
+
+      // Send initial message
+      const { error: messageError } = await supabase
+        .from('messages')
+        .insert({
+          sender_id: user.id,
+          recipient_id: recipientId,
+          content: `Hi! I'd like to connect for skill exchange: ${skillName}`
+        });
+
+      if (messageError) throw messageError;
+
+      toast({
+        title: "Connection sent!",
+        description: "Your connection request and initial message have been sent."
+      });
+    } catch (error) {
+      console.error('Error sending connection:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send connection request",
+        variant: "destructive"
+      });
+    } finally {
+      setIsConnecting(false);
+    }
+  };
 
   const calculateMatchScore = (
     mySkill: any,
@@ -202,39 +246,42 @@ export function UserMatches() {
         ) : (
           <div className="space-y-3">
             {matches.map((match, index) => (
-              <div
+              <motion.div
                 key={`${match.user_id}-${match.skill_name}-${index}`}
-                className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-background to-muted/20"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-background to-muted/20 glass-effect neon-border hover:glow-green transition-all duration-300"
               >
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">{match.display_name || 'Anonymous User'}</h4>
+                    <h4 className="font-medium neon-text font-orbitron">{match.display_name || 'Anonymous User'}</h4>
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs floating-badge glow-blue">
                         Score: {match.match_score}
                       </Badge>
                     </div>
                   </div>
                   
-                  <p className="text-sm text-muted-foreground mb-2">{match.skill_name}</p>
+                  <p className="text-sm text-muted-foreground mb-2 terminal-text">{match.skill_name}</p>
                   
                   <div className="flex gap-2 mb-2">
                     {match.is_teaching && (
-                      <Badge variant="default">Can teach (Level {match.skill_level})</Badge>
+                      <Badge variant="default" className="floating-badge glow-green">Can teach (Level {match.skill_level})</Badge>
                     )}
                     {match.is_learning && (
-                      <Badge variant="secondary">Wants to learn (Level {match.skill_level})</Badge>
+                      <Badge variant="secondary" className="floating-badge glow-blue">Wants to learn (Level {match.skill_level})</Badge>
                     )}
-                    <Badge variant="outline" className={
-                      match.urgency === 3 ? "border-red-500 text-red-600" :
+                    <Badge variant="outline" className={`floating-badge ${
+                      match.urgency === 3 ? "border-red-500 text-red-600 glow-pink" :
                       match.urgency === 2 ? "border-yellow-500 text-yellow-600" :
-                      "border-green-500 text-green-600"
-                    }>
+                      "border-green-500 text-green-600 glow-green"
+                    }`}>
                       {match.urgency === 3 ? "High" : match.urgency === 2 ? "Medium" : "Low"} urgency
                     </Badge>
                   </div>
                   
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground terminal-text">
                     <span>Match factors: </span>
                     <span>Skill compatibility ({match.score_breakdown.skill_diff}), </span>
                     <span>Urgency ({match.score_breakdown.urgency_bonus}), </span>
@@ -242,7 +289,18 @@ export function UserMatches() {
                     {match.timezone && <span> • {match.timezone}</span>}
                   </div>
                 </div>
-              </div>
+                
+                <div className="ml-4">
+                  <Button 
+                    onClick={() => sendConnectionRequest(match.user_id, match.skill_name)}
+                    className="pulse-match glow-green hover:glow-pink transition-all duration-300 font-orbitron"
+                    disabled={isConnecting}
+                  >
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Connect
+                  </Button>
+                </div>
+              </motion.div>
             ))}
           </div>
         )}

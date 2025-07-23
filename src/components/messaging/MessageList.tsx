@@ -159,21 +159,24 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
 
   if (!selectedUserId) {
     return (
-      <Card className="glass-effect neon-border">
+      <Card className="glass-effect neon-border terminal-glow">
         <CardHeader>
-          <CardTitle className="neon-text font-orbitron flex items-center gap-2">
+          <CardTitle className="neon-text font-orbitron flex items-center gap-2 terminal-text">
             <MessageCircle className="h-5 w-5" />
-            Conversations
+            CONVERSATIONS_SYS
           </CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="terminal-text">[LOADING_CONVERSATIONS...]</div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary ml-4"></div>
             </div>
           ) : conversations.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              No conversations yet. Connect with other users to start messaging!
+            <p className="terminal-text text-center py-8">
+              {'{> NO_ACTIVE_CONNECTIONS}'}
+              <br />
+              {'{> INITIATE_SKILL_EXCHANGE_TO_BEGIN}'}
             </p>
           ) : (
             <div className="space-y-3">
@@ -185,22 +188,22 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
                 >
                   <Button
                     variant="ghost"
-                    className="w-full justify-start h-auto p-4 glass-effect"
+                    className="w-full justify-start h-auto p-4 glass-effect terminal-glow hover:glow-green transition-all duration-300"
                     onClick={() => onSelectUser?.(conversation.partnerId, conversation.partnerName)}
                   >
                     <div className="flex items-center gap-3 w-full">
                       <User className="h-10 w-10 p-2 bg-primary/20 rounded-full text-primary" />
                       <div className="flex-1 text-left">
                         <div className="flex items-center justify-between">
-                          <h4 className="font-medium">{conversation.partnerName}</h4>
+                          <h4 className="font-medium terminal-text">[USER] {conversation.partnerName}</h4>
                           {conversation.unreadCount > 0 && (
                             <span className="bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">
                               {conversation.unreadCount}
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {conversation.lastMessage?.content}
+                        <p className="text-sm text-muted-foreground truncate terminal-text">
+                          {'{>'} {conversation.lastMessage?.content}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {formatDistanceToNow(new Date(conversation.lastMessage?.created_at))} ago
@@ -218,11 +221,11 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
   }
 
   return (
-    <Card className="glass-effect neon-border h-[600px] flex flex-col">
+    <Card className="glass-effect neon-border h-[600px] flex flex-col terminal-glow">
       <CardHeader>
-        <CardTitle className="neon-text font-orbitron flex items-center gap-2">
+        <CardTitle className="neon-text font-orbitron flex items-center gap-2 terminal-text">
           <MessageCircle className="h-5 w-5" />
-          Messages
+          MESSAGE_STREAM
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto">

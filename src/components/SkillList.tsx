@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -88,10 +89,10 @@ export function SkillList({ refreshTrigger }: SkillListProps) {
   }
 
   return (
-    <Card>
+    <Card className="glass-effect neon-border">
       <CardHeader>
-        <CardTitle>Your Skills</CardTitle>
-        <CardDescription>
+        <CardTitle className="neon-text font-orbitron">Your Skills</CardTitle>
+        <CardDescription className="text-muted-foreground">
           Manage the skills you can teach and want to learn
         </CardDescription>
       </CardHeader>
@@ -102,19 +103,22 @@ export function SkillList({ refreshTrigger }: SkillListProps) {
           </p>
         ) : (
           <div className="space-y-3">
-            {skills.map((skill) => (
-              <div
+            {skills.map((skill, index) => (
+              <motion.div
                 key={skill.id}
-                className="flex items-center justify-between p-3 border rounded-lg"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="flex items-center justify-between p-3 border rounded-lg glass-effect neon-border hover:glow-green transition-all duration-300"
               >
                 <div className="flex-1">
-                  <h4 className="font-medium">{skill.skill_name}</h4>
+                  <h4 className="font-medium neon-text font-orbitron">{skill.skill_name}</h4>
                   <div className="flex gap-2 mt-1">
                     {skill.is_teaching && (
-                      <Badge variant="default">Teaching</Badge>
+                      <Badge variant="default" className="floating-badge glow-green">Teaching</Badge>
                     )}
                     {skill.is_learning && (
-                      <Badge variant="secondary">Learning</Badge>
+                      <Badge variant="secondary" className="floating-badge glow-blue">Learning</Badge>
                     )}
                   </div>
                 </div>
@@ -122,11 +126,11 @@ export function SkillList({ refreshTrigger }: SkillListProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => deleteSkill(skill.id)}
-                  className="text-destructive hover:text-destructive"
+                  className="text-destructive hover:text-destructive hover:glow-pink transition-all duration-300"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}

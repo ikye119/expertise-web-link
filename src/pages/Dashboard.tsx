@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { SkillForm } from '@/components/SkillForm';
 import { SkillList } from '@/components/SkillList';
 import { UserMatches } from '@/components/UserMatches';
+import { SkillExchangeTimeline } from '@/components/SkillExchangeTimeline';
 import { LogOut, User, MessageCircle, BarChart3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -16,10 +17,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
+    <div className="min-h-screen bg-gradient-primary">
+      <header className="border-b neon-border glass-effect">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">SkillSwap Dashboard</h1>
+          <h1 className="text-2xl font-bold neon-text font-orbitron">SkillSwap Dashboard</h1>
           <div className="flex items-center gap-4">
             <Link to="/messages">
               <Button variant="outline" className="glow-green hover:glow-pink transition-all duration-300">
@@ -35,9 +36,9 @@ export default function Dashboard() {
             </Link>
             <div className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              <span className="text-sm">{user?.email}</span>
+              <span className="text-sm terminal-text">{user?.email}</span>
             </div>
-            <Button variant="outline" onClick={signOut}>
+            <Button variant="outline" onClick={signOut} className="hover:glow-pink transition-all duration-300">
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
             </Button>
@@ -50,6 +51,7 @@ export default function Dashboard() {
           <div className="space-y-8">
             <SkillForm onSkillAdded={handleSkillAdded} />
             <SkillList refreshTrigger={refreshTrigger} />
+            <SkillExchangeTimeline />
           </div>
           <div>
             <UserMatches />

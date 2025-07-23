@@ -63,14 +63,14 @@ export function MessageInput({ recipientId, onMessageSent }: MessageInputProps) 
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex gap-2 p-4 glass-effect rounded-lg"
+      className="flex gap-2 p-4 glass-effect rounded-lg terminal-glow"
     >
       <Textarea
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyPress={handleKeyPress}
-        placeholder="Type your message..."
-        className="flex-1 min-h-[60px] glass-effect border-primary/20 focus:border-primary/50"
+        placeholder="> ENTER_MESSAGE_PAYLOAD..."
+        className="flex-1 min-h-[60px] glass-effect border-primary/20 focus:border-primary/50 terminal-text"
         disabled={isSending}
       />
       <Button
