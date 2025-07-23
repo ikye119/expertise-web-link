@@ -146,25 +146,25 @@ export function SkillExchangeTimeline() {
             {'{> START_CONNECTING_TO_BUILD_TIMELINE}'}
           </p>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {exchanges.map((exchange, index) => (
               <motion.div
                 key={exchange.id}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`timeline-card p-4 rounded-lg glass-effect neon-border ${getStatusColor(exchange.status)} hover:scale-105 transition-all duration-300`}
+                className={`timeline-card p-3 sm:p-4 rounded-lg glass-effect neon-border ${getStatusColor(exchange.status)} hover:scale-105 transition-all duration-300`}
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
                   <div className="flex items-center gap-2">
                     {getStatusIcon(exchange.status)}
-                    <h4 className="font-medium neon-text font-orbitron">
+                    <h4 className="font-medium neon-text font-orbitron text-sm sm:text-base">
                       {exchange.partner_name}
                     </h4>
                   </div>
                   <Badge 
                     variant="outline" 
-                    className={`floating-badge ${getStatusColor(exchange.status)}`}
+                    className={`floating-badge ${getStatusColor(exchange.status)} text-xs w-fit`}
                   >
                     {exchange.status.toUpperCase()}
                   </Badge>

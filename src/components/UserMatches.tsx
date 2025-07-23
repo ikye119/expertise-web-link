@@ -251,11 +251,11 @@ export function UserMatches() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-background to-muted/20 glass-effect neon-border hover:glow-green transition-all duration-300"
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 border rounded-lg bg-gradient-to-r from-background to-muted/20 glass-effect neon-border hover:glow-green transition-all duration-300 gap-3 sm:gap-4"
               >
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium neon-text font-orbitron">{match.display_name || 'Anonymous User'}</h4>
+                <div className="flex-1 w-full sm:w-auto">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+                    <h4 className="font-medium neon-text font-orbitron text-sm sm:text-base">{match.display_name || 'Anonymous User'}</h4>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs floating-badge glow-blue">
                         Score: {match.match_score}
@@ -265,35 +265,35 @@ export function UserMatches() {
                   
                   <p className="text-sm text-muted-foreground mb-2 terminal-text">{match.skill_name}</p>
                   
-                  <div className="flex gap-2 mb-2">
+                  <div className="flex flex-wrap gap-1 sm:gap-2 mb-2">
                     {match.is_teaching && (
-                      <Badge variant="default" className="floating-badge glow-green">Can teach (Level {match.skill_level})</Badge>
+                      <Badge variant="default" className="floating-badge glow-green text-xs">Can teach (Lv {match.skill_level})</Badge>
                     )}
                     {match.is_learning && (
-                      <Badge variant="secondary" className="floating-badge glow-blue">Wants to learn (Level {match.skill_level})</Badge>
+                      <Badge variant="secondary" className="floating-badge glow-blue text-xs">Learning (Lv {match.skill_level})</Badge>
                     )}
-                    <Badge variant="outline" className={`floating-badge ${
+                    <Badge variant="outline" className={`floating-badge text-xs ${
                       match.urgency === 3 ? "border-red-500 text-red-600 glow-pink" :
                       match.urgency === 2 ? "border-yellow-500 text-yellow-600" :
                       "border-green-500 text-green-600 glow-green"
                     }`}>
-                      {match.urgency === 3 ? "High" : match.urgency === 2 ? "Medium" : "Low"} urgency
+                      {match.urgency === 3 ? "High" : match.urgency === 2 ? "Medium" : "Low"}
                     </Badge>
                   </div>
                   
-                  <div className="text-xs text-muted-foreground terminal-text">
-                    <span>Match factors: </span>
-                    <span>Skill compatibility ({match.score_breakdown.skill_diff}), </span>
+                  <div className="text-xs text-muted-foreground terminal-text hidden sm:block">
+                    <span>Match: </span>
+                    <span>Skill ({match.score_breakdown.skill_diff}), </span>
                     <span>Urgency ({match.score_breakdown.urgency_bonus}), </span>
                     <span>Timezone ({match.score_breakdown.timezone_bonus})</span>
                     {match.timezone && <span> • {match.timezone}</span>}
                   </div>
                 </div>
                 
-                <div className="ml-4">
+                <div className="w-full sm:w-auto sm:ml-4">
                   <Button 
                     onClick={() => sendConnectionRequest(match.user_id, match.skill_name)}
-                    className="pulse-match glow-green hover:glow-pink transition-all duration-300 font-orbitron"
+                    className="pulse-match glow-green hover:glow-pink transition-all duration-300 font-orbitron w-full sm:w-auto min-h-[48px] text-sm"
                     disabled={isConnecting}
                   >
                     <MessageCircle className="h-4 w-4 mr-2" />

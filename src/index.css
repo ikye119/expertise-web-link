@@ -206,6 +206,29 @@ All colors MUST be HSL.
     50% { transform: translateY(-6px); }
   }
 
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    .floating-badge {
+      animation: float 4s ease-in-out infinite;
+      font-size: 0.75rem;
+    }
+    
+    .terminal-glow {
+      box-shadow: 
+        inset 0 0 15px rgba(16, 185, 129, 0.1),
+        0 0 20px rgba(16, 185, 129, 0.2),
+        0 0 40px rgba(16, 185, 129, 0.1);
+    }
+
+    .neon-text {
+      text-shadow: 0 0 8px hsl(var(--neon-green) / 0.4);
+    }
+    
+    .pulse-match {
+      animation: pulse-glow 2.5s ease-in-out infinite;
+    }
+  }
+
   @keyframes pulse-glow {
     0%, 100% { 
       box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);

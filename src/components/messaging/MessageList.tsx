@@ -221,15 +221,15 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
   }
 
   return (
-    <Card className="glass-effect neon-border h-[600px] flex flex-col terminal-glow">
-      <CardHeader>
-        <CardTitle className="neon-text font-orbitron flex items-center gap-2 terminal-text">
-          <MessageCircle className="h-5 w-5" />
+    <Card className="glass-effect neon-border h-[50vh] sm:h-[60vh] lg:h-[600px] flex flex-col terminal-glow">
+      <CardHeader className="pb-2 sm:pb-4">
+        <CardTitle className="neon-text font-orbitron flex items-center gap-2 terminal-text text-sm sm:text-base">
+          <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
           MESSAGE_STREAM
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 overflow-y-auto">
-        <div className="space-y-4">
+      <CardContent className="flex-1 overflow-y-auto px-2 sm:px-6">
+        <div className="space-y-2 sm:space-y-4">
           {messages.map((message) => (
             <motion.div
               key={message.id}
@@ -238,13 +238,13 @@ export function MessageList({ selectedUserId, onSelectUser }: MessageListProps) 
               className={`flex ${message.sender_id === user?.id ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[70%] p-3 rounded-lg glass-effect ${
+                className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-lg glass-effect text-sm sm:text-base ${
                   message.sender_id === user?.id
                     ? 'bg-primary/20 neon-border'
                     : 'bg-secondary/50'
                 }`}
               >
-                <p className="text-sm">{message.content}</p>
+                <p className="break-words">{message.content}</p>
                 <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                   <Clock className="h-3 w-3" />
                   {formatDistanceToNow(new Date(message.created_at))} ago
