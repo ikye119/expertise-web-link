@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   BarChart, 
   Bar, 
@@ -21,8 +22,10 @@ import {
   Star, 
   TrendingUp,
   Shield,
-  Activity
+  Activity,
+  Home
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -192,6 +195,14 @@ export default function AdminDashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
+          <div className="flex items-center gap-4 mb-4">
+            <Link to="/dashboard">
+              <Button variant="ghost" className="glow-blue hover:glow-pink transition-all duration-300">
+                <Home className="h-4 w-4 mr-2" />
+                Dashboard
+              </Button>
+            </Link>
+          </div>
           <h1 className="text-4xl font-orbitron font-bold neon-text mb-2">
             Admin Dashboard
           </h1>
