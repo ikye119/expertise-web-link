@@ -12,22 +12,76 @@ interface UserSkill {
   is_learning: boolean;
   user_id: string;
   display_name: string | null;
+  skill_level: number;
+  urgency: number;
+  timezone?: string;
+}
+
+interface MatchedUser {
+  user_id: string;
+  display_name: string | null;
+  skill_name: string;
+  is_teaching: boolean;
+  is_learning: boolean;
+  skill_level: number;
+  urgency: number;
+  timezone?: string;
+  match_score: number;
+  score_breakdown: {
+    skill_diff: number;
+    urgency_bonus: number;
+    timezone_bonus: number;
+  };
 }
 
 export function UserMatches() {
-  const [matches, setMatches] = useState<UserSkill[]>([]);
+  const [matches, setMatches] = useState<MatchedUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const calculateMatchScore = (
+    mySkill: any,
+    theirSkill: any,
+    myTimezone: string = 'UTC',
+    theirTimezone: string = 'UTC'
+  ) => {
+    // Skill level difference (prefer similar levels, max 20 points)
+    const skillDiff = Math.abs(mySkill.skill_level - theirSkill.skill_level);
+    const skillDiffScore = Math.max(0, 20 - skillDiff * 5);
+
+    // Urgency bonus (both urgencies combined, max 30 points)
+    const urgencyScore = (mySkill.urgency + theirSkill.urgency) * 5;
+
+    // Timezone bonus (same timezone gets 15 points, close zones get partial)
+    let timezoneScore = 0;
+    if (myTimezone === theirTimezone) {
+      timezoneScore = 15;
+    } else {
+      // Simple timezone proximity check (could be enhanced)
+      timezoneScore = 5;
+    }
+
+    const totalScore = skillDiffScore + urgencyScore + timezoneScore;
+
+    return {
+      total: totalScore,
+      breakdown: {
+        skill_diff: skillDiffScore,
+        urgency_bonus: urgencyScore,
+        timezone_bonus: timezoneScore
+      }
+    };
+  };
 
   const fetchMatches = async () => {
     if (!user) return;
 
     try {
-      // Get current user's skills
+      // Get current user's skills with all fields
       const { data: mySkills, error: mySkillsError } = await supabase
         .from('skills')
-        .select('skill_name, is_teaching, is_learning')
+        .select('skill_name, is_teaching, is_learning, skill_level, urgency')
         .eq('user_id', user.id);
 
       if (mySkillsError) throw mySkillsError;
@@ -37,10 +91,17 @@ export function UserMatches() {
         return;
       }
 
-      // Find potential matches
+      // Get current user's profile for timezone
+      const { data: myProfile } = await supabase
+        .from('profiles')
+        .select('timezone')
+        .eq('user_id', user.id)
+        .single();
+
+      // Find potential matches with all fields
       const { data: potentialMatches, error: matchesError } = await supabase
         .from('skills')
-        .select('id, skill_name, is_teaching, is_learning, user_id')
+        .select('skill_name, is_teaching, is_learning, skill_level, urgency, user_id')
         .neq('user_id', user.id);
 
       if (matchesError) throw matchesError;
@@ -49,27 +110,50 @@ export function UserMatches() {
       const userIds = potentialMatches?.map(match => match.user_id) || [];
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('user_id, display_name')
+        .select('user_id, display_name, timezone')
         .in('user_id', userIds);
 
-      // Combine skills with profile data
-      const skillsWithProfiles = potentialMatches?.map(match => ({
-        ...match,
-        display_name: profiles?.find(p => p.user_id === match.user_id)?.display_name || null
-      })) || [];
+      // Calculate weighted scores for complementary skills
+      const scoredMatches: MatchedUser[] = [];
+      
+      potentialMatches?.forEach(theirSkill => {
+        mySkills.forEach(mySkill => {
+          // Check if skills are complementary
+          if (
+            mySkill.skill_name.toLowerCase() === theirSkill.skill_name.toLowerCase() &&
+            ((mySkill.is_teaching && theirSkill.is_learning) || 
+             (mySkill.is_learning && theirSkill.is_teaching))
+          ) {
+            const profile = profiles?.find(p => p.user_id === theirSkill.user_id);
+            const score = calculateMatchScore(
+              mySkill,
+              theirSkill,
+              myProfile?.timezone || 'UTC',
+              profile?.timezone || 'UTC'
+            );
 
-      // Filter for complementary skills
-      const complementaryMatches = skillsWithProfiles.filter(match => {
-        return mySkills.some(mySkill => {
-          return (
-            mySkill.skill_name.toLowerCase() === match.skill_name.toLowerCase() &&
-            ((mySkill.is_teaching && match.is_learning) || 
-             (mySkill.is_learning && match.is_teaching))
-          );
+            scoredMatches.push({
+              user_id: theirSkill.user_id,
+              display_name: profile?.display_name || null,
+              skill_name: theirSkill.skill_name,
+              is_teaching: theirSkill.is_teaching,
+              is_learning: theirSkill.is_learning,
+              skill_level: theirSkill.skill_level,
+              urgency: theirSkill.urgency,
+              timezone: profile?.timezone,
+              match_score: score.total,
+              score_breakdown: score.breakdown
+            });
+          }
         });
       });
 
-      setMatches(complementaryMatches);
+      // Sort by match score (highest first) and take top matches
+      const topMatches = scoredMatches
+        .sort((a, b) => b.match_score - a.match_score)
+        .slice(0, 10);
+
+      setMatches(topMatches);
     } catch (error) {
       console.error('Error fetching matches:', error);
       toast({
@@ -111,21 +195,45 @@ export function UserMatches() {
           </p>
         ) : (
           <div className="space-y-3">
-            {matches.map((match) => (
+            {matches.map((match, index) => (
               <div
-                key={match.id}
-                className="flex items-center justify-between p-3 border rounded-lg"
+                key={`${match.user_id}-${match.skill_name}-${index}`}
+                className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-background to-muted/20"
               >
                 <div className="flex-1">
-                  <h4 className="font-medium">{match.display_name || 'Anonymous User'}</h4>
-                  <p className="text-sm text-muted-foreground">{match.skill_name}</p>
-                  <div className="flex gap-2 mt-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium">{match.display_name || 'Anonymous User'}</h4>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        Score: {match.match_score}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm text-muted-foreground mb-2">{match.skill_name}</p>
+                  
+                  <div className="flex gap-2 mb-2">
                     {match.is_teaching && (
-                      <Badge variant="default">Can teach</Badge>
+                      <Badge variant="default">Can teach (Level {match.skill_level})</Badge>
                     )}
                     {match.is_learning && (
-                      <Badge variant="secondary">Wants to learn</Badge>
+                      <Badge variant="secondary">Wants to learn (Level {match.skill_level})</Badge>
                     )}
+                    <Badge variant="outline" className={
+                      match.urgency === 3 ? "border-red-500 text-red-600" :
+                      match.urgency === 2 ? "border-yellow-500 text-yellow-600" :
+                      "border-green-500 text-green-600"
+                    }>
+                      {match.urgency === 3 ? "High" : match.urgency === 2 ? "Medium" : "Low"} urgency
+                    </Badge>
+                  </div>
+                  
+                  <div className="text-xs text-muted-foreground">
+                    <span>Match factors: </span>
+                    <span>Skill compatibility ({match.score_breakdown.skill_diff}), </span>
+                    <span>Urgency ({match.score_breakdown.urgency_bonus}), </span>
+                    <span>Timezone ({match.score_breakdown.timezone_bonus})</span>
+                    {match.timezone && <span> • {match.timezone}</span>}
                   </div>
                 </div>
               </div>

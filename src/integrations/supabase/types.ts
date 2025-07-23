@@ -19,6 +19,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          timezone: string | null
           updated_at: string
           user_id: string
         }
@@ -26,6 +27,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          timezone?: string | null
           updated_at?: string
           user_id: string
         }
@@ -33,6 +35,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          timezone?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -71,8 +74,10 @@ export type Database = {
           id: string
           is_learning: boolean
           is_teaching: boolean
+          skill_level: number | null
           skill_name: string
           updated_at: string
+          urgency: number | null
           user_id: string
         }
         Insert: {
@@ -80,8 +85,10 @@ export type Database = {
           id?: string
           is_learning?: boolean
           is_teaching?: boolean
+          skill_level?: number | null
           skill_name: string
           updated_at?: string
+          urgency?: number | null
           user_id: string
         }
         Update: {
@@ -89,8 +96,10 @@ export type Database = {
           id?: string
           is_learning?: boolean
           is_teaching?: boolean
+          skill_level?: number | null
           skill_name?: string
           updated_at?: string
+          urgency?: number | null
           user_id?: string
         }
         Relationships: []

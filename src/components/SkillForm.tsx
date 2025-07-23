@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +17,8 @@ export function SkillForm({ onSkillAdded }: SkillFormProps) {
   const [skillName, setSkillName] = useState('');
   const [isTeaching, setIsTeaching] = useState(false);
   const [isLearning, setIsLearning] = useState(false);
+  const [skillLevel, setSkillLevel] = useState(1);
+  const [urgency, setUrgency] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -36,16 +39,18 @@ export function SkillForm({ onSkillAdded }: SkillFormProps) {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase
-        .from('skills')
-        .insert([
-          {
-            user_id: user.id,
-            skill_name: skillName.trim(),
-            is_teaching: isTeaching,
-            is_learning: isLearning
-          }
-        ]);
+        const { error } = await supabase
+          .from('skills')
+          .insert([
+            {
+              user_id: user.id,
+              skill_name: skillName.trim(),
+              is_teaching: isTeaching,
+              is_learning: isLearning,
+              skill_level: skillLevel,
+              urgency: urgency
+            }
+          ]);
 
       if (error) throw error;
 
@@ -57,6 +62,8 @@ export function SkillForm({ onSkillAdded }: SkillFormProps) {
       setSkillName('');
       setIsTeaching(false);
       setIsLearning(false);
+      setSkillLevel(1);
+      setUrgency(1);
       onSkillAdded();
     } catch (error) {
       console.error('Error adding skill:', error);
@@ -91,6 +98,38 @@ export function SkillForm({ onSkillAdded }: SkillFormProps) {
             />
           </div>
           
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="skillLevel">Skill Level</Label>
+              <Select value={skillLevel.toString()} onValueChange={(value) => setSkillLevel(parseInt(value))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Beginner</SelectItem>
+                  <SelectItem value="2">Basic</SelectItem>
+                  <SelectItem value="3">Intermediate</SelectItem>
+                  <SelectItem value="4">Advanced</SelectItem>
+                  <SelectItem value="5">Expert</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="urgency">Urgency</Label>
+              <Select value={urgency.toString()} onValueChange={(value) => setUrgency(parseInt(value))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Low</SelectItem>
+                  <SelectItem value="2">Medium</SelectItem>
+                  <SelectItem value="3">High</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           <div className="space-y-3">
             <Label>What would you like to do?</Label>
             <div className="flex items-center space-x-2">
