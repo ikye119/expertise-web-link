@@ -1,66 +1,111 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/useAuth';
-import { SkillForm } from '@/components/SkillForm';
+import { MessageCircle, Users, Zap, User, Search, Inbox } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { SkillList } from '@/components/SkillList';
 import { UserMatches } from '@/components/UserMatches';
 import { SkillExchangeTimeline } from '@/components/SkillExchangeTimeline';
-import { LogOut, User, MessageCircle, BarChart3 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { NotificationIcon } from '@/components/notifications/NotificationIcon';
+import { useAdmin } from '@/hooks/useAdmin';
 
 export default function Dashboard() {
-  const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  const handleSkillAdded = () => {
-    setRefreshTrigger(prev => prev + 1);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-primary">
-      <header className="border-b neon-border glass-effect sticky top-0 z-50">
-        <div className="container mx-auto px-2 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
-          <h1 className="text-lg sm:text-2xl font-bold neon-text font-orbitron truncate">SkillSwap</h1>
-          <div className="flex items-center gap-1 sm:gap-4">
-            <Link to="/messages">
-              <Button variant="outline" size="sm" className="glow-green hover:glow-pink transition-all duration-300 min-w-[44px] min-h-[44px]">
-                <MessageCircle className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">Messages</span>
-              </Button>
-            </Link>
-            <Link to="/admin">
-              <Button variant="outline" size="sm" className="glow-blue hover:glow-pink transition-all duration-300 min-w-[44px] min-h-[44px]">
-                <BarChart3 className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">Admin</span>
-              </Button>
-            </Link>
-            <div className="hidden md:flex items-center gap-2">
-              <User className="h-5 w-5" />
-              <span className="text-sm terminal-text truncate max-w-32">{user?.email}</span>
+      <div className="container mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 sm:mb-8 pt-4 sm:pt-8"
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-orbitron font-bold neon-text">
+                [SKILLSWAP_TERMINAL]
+              </h1>
+              <p className="text-muted-foreground terminal-text text-sm sm:text-base">
+                {'{> NEURAL_SKILL_EXCHANGE_NETWORK}'}
+              </p>
             </div>
-            <Button variant="outline" size="sm" onClick={signOut} className="hover:glow-pink transition-all duration-300 min-w-[44px] min-h-[44px]">
-              <LogOut className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Sign Out</span>
-            </Button>
+            <div className="flex items-center gap-2">
+              <NotificationIcon />
+              {isAdmin && (
+                <Link to="/admin">
+                  <Button className="glow-red hover:glow-pink transition-all duration-300 min-w-[44px] min-h-[44px]">
+                    <Users className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Admin</span>
+                  </Button>
+                </Link>
+              )}
+              <Link to="/profile">
+                <Button className="glow-blue hover:glow-pink transition-all duration-300 min-w-[44px] min-h-[44px]">
+                  <User className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Profile</span>
+                </Button>
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
+        </motion.div>
 
-      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
-          <div className="space-y-4 sm:space-y-8 order-1 lg:order-1">
-            <SkillForm onSkillAdded={handleSkillAdded} />
-            <div className="block lg:hidden">
-              <UserMatches />
-            </div>
+        {/* Quick Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8"
+        >
+          <Link to="/match">
+            <Card className="glass-effect terminal-glow hover:neon-border transition-all duration-300 cursor-pointer">
+              <CardContent className="p-3 sm:p-4 text-center">
+                <Search className="h-6 w-6 sm:h-8 sm:w-8 text-primary mx-auto mb-2 glow-blue" />
+                <p className="text-xs sm:text-sm font-medium terminal-text">Find Matches</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link to="/requests">
+            <Card className="glass-effect terminal-glow hover:neon-border transition-all duration-300 cursor-pointer">
+              <CardContent className="p-3 sm:p-4 text-center">
+                <Inbox className="h-6 w-6 sm:h-8 sm:w-8 text-primary mx-auto mb-2 glow-green" />
+                <p className="text-xs sm:text-sm font-medium terminal-text">Requests</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link to="/messages">
+            <Card className="glass-effect terminal-glow hover:neon-border transition-all duration-300 cursor-pointer">
+              <CardContent className="p-3 sm:p-4 text-center">
+                <MessageCircle className="h-6 w-6 sm:h-8 sm:w-8 text-primary mx-auto mb-2 glow-pink" />
+                <p className="text-xs sm:text-sm font-medium terminal-text">Messages</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link to="/profile">
+            <Card className="glass-effect terminal-glow hover:neon-border transition-all duration-300 cursor-pointer">
+              <CardContent className="p-3 sm:p-4 text-center">
+                <User className="h-6 w-6 sm:h-8 sm:w-8 text-primary mx-auto mb-2 glow-blue" />
+                <p className="text-xs sm:text-sm font-medium terminal-text">Profile</p>
+              </CardContent>
+            </Card>
+          </Link>
+        </motion.div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             <SkillList refreshTrigger={refreshTrigger} />
             <SkillExchangeTimeline />
           </div>
-          <div className="order-2 lg:order-2 hidden lg:block">
+          <div className="space-y-6 sm:space-y-8">
             <UserMatches />
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
