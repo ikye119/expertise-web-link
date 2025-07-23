@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { User, ArrowRightLeft, Star, MapPin } from 'lucide-react';
+import { ReviewButton } from '@/components/reviews/ReviewButton';
 
 interface MatchCardProps {
   match: {
@@ -114,17 +115,25 @@ export function MatchCard({ match, onOfferSwap }: MatchCardProps) {
             </div>
           </div>
 
-          <Button
-            onClick={handleOfferSwap}
-            className={`w-full transition-all duration-300 ${
-              match.is_mutual 
-                ? 'glow-green hover:glow-pink pulse-match' 
-                : 'glow-blue hover:glow-green'
-            }`}
-          >
-            <ArrowRightLeft className="h-4 w-4 mr-2" />
-            {match.is_mutual ? 'INITIATE_MUTUAL_SWAP' : 'OFFER_SKILL_SWAP'}
-          </Button>
+          <div className="space-y-2">
+            <Button
+              onClick={handleOfferSwap}
+              className={`w-full transition-all duration-300 ${
+                match.is_mutual 
+                  ? 'glow-green hover:glow-pink pulse-match' 
+                  : 'glow-blue hover:glow-green'
+              }`}
+            >
+              <ArrowRightLeft className="h-4 w-4 mr-2" />
+              {match.is_mutual ? 'INITIATE_MUTUAL_SWAP' : 'OFFER_SKILL_SWAP'}
+            </Button>
+            
+            <ReviewButton
+              reviewedUserId={match.user_id}
+              displayName={match.display_name || 'Anonymous'}
+              skillName={match.skills_offered[0] || 'General Skills'}
+            />
+          </div>
         </CardContent>
       </Card>
     </motion.div>

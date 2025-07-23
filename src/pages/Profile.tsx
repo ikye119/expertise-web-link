@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Home, User, Edit, Plus, BookOpen, GraduationCap } from 'lucide-react';
+import { Home, User, Edit, Plus, BookOpen, GraduationCap, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { ProfileEditor } from '@/components/profile/ProfileEditor';
 import { SkillForm } from '@/components/SkillForm';
+import { ReviewsOverview } from '@/components/reviews/ReviewsOverview';
 
 interface ProfileData {
   display_name: string | null;
@@ -33,7 +34,7 @@ export default function Profile() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('overview');
   const [showSkillForm, setShowSkillForm] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -221,13 +222,20 @@ export default function Profile() {
           transition={{ delay: 0.2 }}
         >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 glass-effect">
+            <TabsList className="grid w-full grid-cols-4 glass-effect">
               <TabsTrigger 
-                value="profile" 
+                value="overview" 
                 className="data-[state=active]:glow-blue"
               >
                 <User className="h-4 w-4 mr-2" />
                 Overview
+              </TabsTrigger>
+              <TabsTrigger 
+                value="reviews"
+                className="data-[state=active]:glow-yellow"
+              >
+                <Star className="h-4 w-4 mr-2" />
+                Reviews
               </TabsTrigger>
               <TabsTrigger 
                 value="skills"
@@ -246,7 +254,7 @@ export default function Profile() {
             </TabsList>
 
             <div className="mt-6">
-              <TabsContent value="profile" className="space-y-6">
+              <TabsContent value="overview" className="space-y-6">
                 {/* Skills Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Card className="glass-effect terminal-glow">
@@ -305,6 +313,16 @@ export default function Profile() {
                     </CardContent>
                   </Card>
                 </div>
+              </TabsContent>
+
+              <TabsContent value="reviews" className="space-y-6">
+                {user && (
+                  <ReviewsOverview 
+                    userId={user.id} 
+                    displayName={profile?.display_name || 'Anonymous User'}
+                    showDetailed={true}
+                  />
+                )}
               </TabsContent>
 
               <TabsContent value="skills" className="space-y-6">

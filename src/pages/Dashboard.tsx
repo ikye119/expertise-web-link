@@ -9,6 +9,7 @@ import { UserMatches } from '@/components/UserMatches';
 import { SkillExchangeTimeline } from '@/components/SkillExchangeTimeline';
 import { NotificationIcon } from '@/components/notifications/NotificationIcon';
 import { UserMenu } from '@/components/ui/user-menu';
+import { SkillSessionManager } from '@/components/sessions/SkillSessionManager';
 import { useAdmin } from '@/hooks/useAdmin';
 
 export default function Dashboard() {
@@ -95,6 +96,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           <div className="lg:col-span-2 space-y-6 sm:space-y-8">
             <SkillList refreshTrigger={refreshTrigger} />
+            <SkillSessionManager />
             <SkillExchangeTimeline />
           </div>
           <div className="space-y-6 sm:space-y-8">
