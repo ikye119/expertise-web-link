@@ -1,73 +1,57 @@
-# Welcome to your Lovable project
+# 💡 SkillSwap – Peer-to-Peer Skill Exchange Platform
 
-## Project info
+SkillSwap is a modern web app that connects people who want to *learn* with those willing to *teach*. Think of it as a barter system for skills — if you teach me graphic design, I’ll teach you JavaScript. Simple, clean, and powerful.
 
-**URL**: https://lovable.dev/projects/deb4062e-f782-4e6b-95e0-6cd2acf42106
 
-## How can I edit this code?
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🚀 Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/deb4062e-f782-4e6b-95e0-6cd2acf42106) and start prompting.
+- 🔐 *Authentication* – Email/password login via Supabase
+- 🧠 *AI Skill Suggestions* – Optional smart suggestions for in-demand skills
+- 🧑‍💼 *User Profiles* – List your skills and what you want to learn
+- 🔄 *Skill Matching* – Algorithmic skill-match engine
+- 💬 *Real-time Messaging* – Chat system to connect learners and teachers
+- ⭐ *Review & Rating System* – Rate your learning/training experience
+- 🕶 *Dark Neon UI* – A bold nightclub-style visual design
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🛠 Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- *Frontend*: React + TypeScript + Tailwind CSS
+- *Backend*: Supabase (PostgreSQL, Auth, RLS)
+- *Deployment*: Lovable + Web2App APK export
+- *AI API*: Optional integration for smart suggestions
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 📱 App Demo
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+> You can try out the *APK* version here:
+> [Download SkillSwap APK](https://drive.google.com/file/d/1-2i6WpZwjDcPFt9IJXcuVNunU1DwqyyG/view?usp=drivesdk)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🙋‍♂ About Me
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+I’m James Ikenna – a passionate software engineer based in Nigeria. I’m building projects that solve real problems and look damn good while doing it.
 
-**Edit a file directly in GitHub**
+- 🔗 [LinkedIn](https://www.linkedin.com/in/james-ikenna-507a39274)
+- 🐙 [GitHub](https://github.com/ikye119)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## 🧪 Coming Soon
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Admin dashboard (for me only 👑)
+- Wallet system (skill token or rewards)
+- Group classes / broadcast rooms
+- In-app video call
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 📝 License
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/deb4062e-f782-4e6b-95e0-6cd2acf42106) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is open for collaboration but not for resale. Built with ❤ and caffeine.
