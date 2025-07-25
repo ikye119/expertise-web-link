@@ -30,7 +30,7 @@ SkillSwap is a modern web app that connects people who want to *learn* with thos
 ## 📱 App Demo
 
 > You can try out the *APK* version here:
-> [Download SkillSwap APK](https://drive.google.com/file/d/1-2i6WpZwjDcPFt9IJXcuVNunU1DwqyyG/view?usp=drivesdk)
+> [Download SkillSwap APK](https://drive.google.com/file/d/1-kb8EI75HCElAU7hQggdBKLG7ea30Mpj/view?usp=drivesdk)
 
 ---
 
